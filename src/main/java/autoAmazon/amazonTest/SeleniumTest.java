@@ -1,9 +1,17 @@
-package autoAmazon.automateTasks;
+package autoAmazon.amazonTest;
 
 import java.util.Set;
 //import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import autoAmazon.helper.Helper;
+import autoAmazon.pages.AddToCartPage;
+import autoAmazon.pages.DeliveryAddressPage;
+import autoAmazon.pages.HomePage;
+import autoAmazon.pages.LoginPage;
+import autoAmazon.pages.ProductPage;
+import autoAmazon.pages.SearchResultPage;
 
 public class SeleniumTest {	
 		
@@ -14,12 +22,13 @@ public class SeleniumTest {
 			SearchResultPage srPage;
 			AddToCartPage atcPage;
 			LoginPage loginPage;
+			ProductPage pPage=null;
+			DeliveryAddressPage deliveryAddPage;
 			
 			System.setProperty("webdriver.chrome.driver", "D:\\Softwares\\eclipse-workspace\\lib\\chromedriver.exe");
 			driver = new ChromeDriver();
 			driver.get("https://www.amazon.in/");		
 			driver.manage().window().maximize();
-			//Assert.assertTrue(driver.findElement(By.xpath("//a[contains(@class, 'nav-logo-link')]")).getAttribute("aria-label").contains("Amazon"));
 			Thread.sleep(3000);
 
 			homePage = new HomePage(driver);
@@ -29,35 +38,36 @@ public class SeleniumTest {
 			//Search Result page is displayed
 			srPage = new SearchResultPage(driver);
 			srPage.clickResult(productName);			
-
-			//Handling windows
+						
 			String parentWinHandle = driver.getWindowHandle();
-			Set<String> winHandles = driver.getWindowHandles();
-	        for(String handle: winHandles){
-	            if(!handle.equals(parentWinHandle)){
-		            driver.switchTo().window(handle);
-		            
-		    		//Selected Product page is displayed
-		    		ProductPage pPage = new ProductPage(driver);
-		    		pPage.clickAddToCart();	    		
-		    		Thread.sleep(3000);
-	            }
-	        }
+			
+			Helper helper = new Helper(driver);
+			helper.switchToChildWindow(parentWinHandle);
+	        
+    		//Selected Product page is displayed
+    		pPage = new ProductPage(driver);
+    		pPage.clickAddToCart();	    		
+    		Thread.sleep(3000);	
 
 	        //Add to Cart page is displayed
 	        atcPage = new AddToCartPage(driver);
 	        atcPage.clickProceed();
-			
+	        
 	        //Login page is displayed
 	        loginPage = new LoginPage(driver);
 	        loginPage.verifyLoginPage();
+	        loginPage.enterUserCredentials("bejoise.antony.in@gmail.com", "Amazon#143");
+	        
+	        //Delivery page is displayed
+	        deliveryAddPage = new DeliveryAddressPage(driver);
+	        deliveryAddPage.verifyDeliveryPage("Bejoise");	        
+	        
 			driver.close();
 			
 			//Close the parent window
 	        driver.switchTo().window(parentWinHandle);
 	        driver.close();
 			System.out.println("Final Verification is successful");
-		}
-		
+		}		
 
 }

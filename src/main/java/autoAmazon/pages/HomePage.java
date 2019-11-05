@@ -1,21 +1,22 @@
-package autoAmazon.automateTasks;
+package autoAmazon.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class ProductPage {
+public class HomePage {
 	WebDriver driver;
 	By searchBox = By.xpath("//input[@id='twotabsearchtextbox' and @class ='nav-input']");
 	By submitButton = By.xpath("//input[@class='nav-input' and @type='submit']");
 	
-	public ProductPage(WebDriver driver) {
+	public HomePage(WebDriver driver) {
 		this.driver = driver;
 	}
 	
-	public void clickAddToCart() throws InterruptedException {
-		System.out.println("Add to Cart Verification");
+	public void searchProduct(String productName) throws InterruptedException {
+		System.out.println("Initial Verification is successful");
 		Thread.sleep(3000);
-		driver.findElement(By.xpath("//input[@id='add-to-cart-button' and @class='a-button-input']")).click();
+		driver.findElement(searchBox).sendKeys(productName);
+		driver.findElement(submitButton).click();
 		Thread.sleep(3000);
 	}
 }
