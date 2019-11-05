@@ -1,11 +1,11 @@
 package autoAmazon.amazonTest;
 
-import java.util.Set;
-//import org.junit.Assert;
+import java.io.IOException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import autoAmazon.helper.Helper;
+import autoAmazon.helper.ReadExcel;
 import autoAmazon.pages.AddToCartPage;
 import autoAmazon.pages.DeliveryAddressPage;
 import autoAmazon.pages.HomePage;
@@ -15,7 +15,7 @@ import autoAmazon.pages.SearchResultPage;
 
 public class SeleniumTest {	
 		
-		public static void main(String[] args) throws InterruptedException {
+		public static void main(String[] args) throws InterruptedException, IOException {
 			
 			WebDriver driver;
 			HomePage homePage;
@@ -23,7 +23,8 @@ public class SeleniumTest {
 			AddToCartPage atcPage;
 			LoginPage loginPage;
 			ProductPage pPage=null;
-			DeliveryAddressPage deliveryAddPage;
+			DeliveryAddressPage deliveryAddPage;	
+			ReadExcel readExcel;
 			
 			System.setProperty("webdriver.chrome.driver", "D:\\Softwares\\eclipse-workspace\\lib\\chromedriver.exe");
 			driver = new ChromeDriver();
@@ -31,8 +32,9 @@ public class SeleniumTest {
 			driver.manage().window().maximize();
 			Thread.sleep(3000);
 
+			readExcel = new ReadExcel();
+			String productName = readExcel.readSheet(1,0);
 			homePage = new HomePage(driver);
-			String productName = "Philips PowerPro FC9352";
 			homePage.searchProduct(productName);
 			
 			//Search Result page is displayed
@@ -56,11 +58,14 @@ public class SeleniumTest {
 	        //Login page is displayed
 	        loginPage = new LoginPage(driver);
 	        loginPage.verifyLoginPage();
-	        loginPage.enterUserCredentials("bejoise.antony.in@gmail.com", "Amazon#143");
+			String userName = readExcel.readSheet(1,1);
+			String password = readExcel.readSheet(1,2);
+	        loginPage.enterUserCredentials(userName, password);
 	        
 	        //Delivery page is displayed
 	        deliveryAddPage = new DeliveryAddressPage(driver);
-	        deliveryAddPage.verifyDeliveryPage("Bejoise");	        
+	        String custName = readExcel.readSheet(1,3);
+	        deliveryAddPage.verifyDeliveryPage(custName);	        
 	        
 			driver.close();
 			
